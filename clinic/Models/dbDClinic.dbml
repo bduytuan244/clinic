@@ -1,0 +1,151 @@
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="dclinic" Class="dbDClinicDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Table Name="dbo.admins" Member="admins">
+    <Type Name="admin">
+      <Column Name="doctor_id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="full_name" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="specialization" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="fee" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
+      <Column Name="image_path" Type="System.String" DbType="VarChar(255)" CanBeNull="true" />
+      <Column Name="email" Type="System.String" DbType="VarChar(255)" CanBeNull="true" />
+      <Column Name="username" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="password" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
+      <Column Name="is_active" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Association Name="admin_appointmentform" Member="appointmentforms" ThisKey="doctor_id" OtherKey="doctor_id" Type="appointmentform" />
+      <Association Name="admin_notification" Member="notifications" ThisKey="doctor_id" OtherKey="doctor_id" Type="notification" />
+      <Association Name="admin_qa_forum" Member="qa_forums" ThisKey="doctor_id" OtherKey="doctor_id" Type="qa_forum" />
+      <Association Name="admin_review1" Member="reviews" ThisKey="doctor_id" OtherKey="doctor_id" Type="review" />
+    </Type>
+  </Table>
+  <Table Name="dbo.appointmentforms" Member="appointmentforms">
+    <Type Name="appointmentform">
+      <Column Name="appointment_id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="patient_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="doctor_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="service_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="reason" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="symptom_image" Type="System.String" DbType="VarChar(255)" CanBeNull="true" />
+      <Column Name="session_shift" Type="System.String" DbType="NVarChar(20)" CanBeNull="true" />
+      <Column Name="appointment_date" Type="System.DateTime" DbType="Date" CanBeNull="true" />
+      <Column Name="status" Type="System.String" DbType="NVarChar(20)" CanBeNull="true" />
+      <Column Name="qr_code" Type="System.String" DbType="VarChar(255)" CanBeNull="true" />
+      <Column Name="patient_code" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="created_at" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Association Name="appointmentform_treatment_result" Member="treatment_results" ThisKey="appointment_id" OtherKey="appointment_id" Type="treatment_result" />
+      <Association Name="admin_appointmentform" Member="admin" ThisKey="doctor_id" OtherKey="doctor_id" Type="admin" IsForeignKey="true" />
+      <Association Name="customer_appointmentform" Member="customer" ThisKey="patient_id" OtherKey="patient_id" Type="customer" IsForeignKey="true" />
+      <Association Name="service_appointmentform" Member="service" ThisKey="service_id" OtherKey="service_id" Type="service" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.clinic_branches" Member="clinic_branches">
+    <Type Name="clinic_branch">
+      <Column Name="branch_id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="branch_name" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="address" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Column Name="phone_number" Type="System.String" DbType="VarChar(20)" CanBeNull="true" />
+      <Column Name="email" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
+      <Column Name="opening_hours" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.customers" Member="customers">
+    <Type Name="customer">
+      <Column Name="patient_id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="full_name" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="gender" Type="System.String" DbType="NVarChar(10)" CanBeNull="true" />
+      <Column Name="phone" Type="System.String" DbType="VarChar(20)" CanBeNull="true" />
+      <Column Name="email" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
+      <Column Name="dob" Type="System.DateTime" DbType="Date" CanBeNull="true" />
+      <Column Name="ethnicity" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="province" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="password" Type="System.String" DbType="VarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="is_active" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Association Name="customer_appointmentform" Member="appointmentforms" ThisKey="patient_id" OtherKey="patient_id" Type="appointmentform" />
+      <Association Name="customer_notification" Member="notifications" ThisKey="patient_id" OtherKey="patient_id" Type="notification" />
+      <Association Name="customer_qa_forum" Member="qa_forums" ThisKey="patient_id" OtherKey="patient_id" Type="qa_forum" />
+      <Association Name="customer_comment" Member="comments" ThisKey="patient_id" OtherKey="patient_id" Type="comment" />
+      <Association Name="customer_review1" Member="reviews" ThisKey="patient_id" OtherKey="patient_id" Type="review" />
+    </Type>
+  </Table>
+  <Table Name="dbo.chat" Member="chats">
+    <Type Name="chat">
+      <Column Name="chat_id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="sender_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="receiver_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="sender_role" Type="System.String" DbType="NVarChar(20)" CanBeNull="true" />
+      <Column Name="receiver_role" Type="System.String" DbType="NVarChar(20)" CanBeNull="true" />
+      <Column Name="message_text" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="sent_at" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="is_read" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.notifications" Member="notifications">
+    <Type Name="notification">
+      <Column Name="notification_id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="patient_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="doctor_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="message" Type="System.String" DbType="NVarChar(500)" CanBeNull="true" />
+      <Column Name="sent_at" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="status" Type="System.String" DbType="NVarChar(20)" CanBeNull="true" />
+      <Association Name="admin_notification" Member="admin" ThisKey="doctor_id" OtherKey="doctor_id" Type="admin" IsForeignKey="true" />
+      <Association Name="customer_notification" Member="customer" ThisKey="patient_id" OtherKey="patient_id" Type="customer" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.qa_forum" Member="qa_forums">
+    <Type Name="qa_forum">
+      <Column Name="qa_id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="question" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="answer" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="patient_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="doctor_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="status" Type="System.String" DbType="NVarChar(20)" CanBeNull="true" />
+      <Column Name="created_at" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Association Name="admin_qa_forum" Member="admin" ThisKey="doctor_id" OtherKey="doctor_id" Type="admin" IsForeignKey="true" />
+      <Association Name="customer_qa_forum" Member="customer" ThisKey="patient_id" OtherKey="patient_id" Type="customer" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.services" Member="services">
+    <Type Name="service">
+      <Column Name="service_id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="service_name" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="price" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
+      <Column Name="description" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="image_path" Type="System.String" DbType="VarChar(255)" CanBeNull="true" />
+      <Column Name="update_date" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Association Name="service_appointmentform" Member="appointmentforms" ThisKey="service_id" OtherKey="service_id" Type="appointmentform" />
+    </Type>
+  </Table>
+  <Table Name="dbo.treatment_results" Member="treatment_results">
+    <Type Name="treatment_result">
+      <Column Name="result_id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="appointment_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="treatment_code" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="result_details" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="created_at" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Association Name="appointmentform_treatment_result" Member="appointmentform" ThisKey="appointment_id" OtherKey="appointment_id" Type="appointmentform" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.comments" Member="comments">
+    <Type Name="comment">
+      <Column Name="comment_id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="review_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="patient_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="comment_text" Type="System.String" DbType="NVarChar(MAX) NOT NULL" CanBeNull="false" />
+      <Column Name="created_at" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Association Name="customer_comment" Member="customer" ThisKey="patient_id" OtherKey="patient_id" Type="customer" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+      <Association Name="review1_comment" Member="review" ThisKey="review_id" OtherKey="review_id" Type="review" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.reviews" Member="reviews">
+    <Type Name="review">
+      <Column Name="review_id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="patient_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="doctor_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="rating" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="comment" Type="System.String" DbType="NVarChar(1000)" CanBeNull="true" />
+      <Column Name="created_at" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="title" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Association Name="review1_comment" Member="comments" ThisKey="review_id" OtherKey="review_id" Type="comment" />
+      <Association Name="admin_review1" Member="admin" ThisKey="doctor_id" OtherKey="doctor_id" Type="admin" IsForeignKey="true" />
+      <Association Name="customer_review1" Member="customer" ThisKey="patient_id" OtherKey="patient_id" Type="customer" IsForeignKey="true" />
+    </Type>
+  </Table>
+</Database>
