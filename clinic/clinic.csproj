@@ -129,16 +129,27 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\AdminManagerController.cs" />
-    <Compile Include="Controllers\dbDClinicContext.cs" />
     <Compile Include="Controllers\EmailController.cs" />
     <Compile Include="Controllers\FormController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\MessageController.cs" />
+    <Compile Include="Controllers\OrderController.cs" />
     <Compile Include="Controllers\ReviewController.cs" />
+    <Compile Include="Controllers\ServiceController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\admins.cs" />
+    <Compile Include="Models\ApplicationForms.cs" />
+    <Compile Include="Models\Comment.cs" />
+    <Compile Include="Models\CommnentViewModel.cs" />
+    <Compile Include="Models\Customer.cs" />
+    <Compile Include="Models\EmailService.cs" />
+    <Compile Include="Models\EmailViewModel.cs" />
+    <Compile Include="Models\Form.cs" />
+    <Compile Include="Models\Review.cs" />
+    <Compile Include="Models\ReviewViewModel.cs" />
     <Compile Include="Models\Talk.cs" />
     <Compile Include="Models\dbDClinic.designer.cs">
       <AutoGen>True</AutoGen>
@@ -218,7 +229,9 @@
     <Folder Include="Views\Form\" />
     <Folder Include="Views\Login\" />
     <Folder Include="Views\Message\" />
+    <Folder Include="Views\Order\" />
     <Folder Include="Views\Review\" />
+    <Folder Include="Views\Service\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.rtl.min.css.map" />

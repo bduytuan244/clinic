@@ -13,7 +13,7 @@
       <Association Name="admin_appointmentform" Member="appointmentforms" ThisKey="doctor_id" OtherKey="doctor_id" Type="appointmentform" />
       <Association Name="admin_notification" Member="notifications" ThisKey="doctor_id" OtherKey="doctor_id" Type="notification" />
       <Association Name="admin_qa_forum" Member="qa_forums" ThisKey="doctor_id" OtherKey="doctor_id" Type="qa_forum" />
-      <Association Name="admin_review1" Member="reviews" ThisKey="doctor_id" OtherKey="doctor_id" Type="review" />
+      <Association Name="admin_review" Member="reviews" ThisKey="doctor_id" OtherKey="doctor_id" Type="review" />
     </Type>
   </Table>
   <Table Name="dbo.appointmentforms" Member="appointmentforms">
@@ -62,7 +62,8 @@
       <Association Name="customer_notification" Member="notifications" ThisKey="patient_id" OtherKey="patient_id" Type="notification" />
       <Association Name="customer_qa_forum" Member="qa_forums" ThisKey="patient_id" OtherKey="patient_id" Type="qa_forum" />
       <Association Name="customer_comment" Member="comments" ThisKey="patient_id" OtherKey="patient_id" Type="comment" />
-      <Association Name="customer_review1" Member="reviews" ThisKey="patient_id" OtherKey="patient_id" Type="review" />
+      <Association Name="customer_review" Member="reviews" ThisKey="patient_id" OtherKey="patient_id" Type="review" />
+      <Association Name="customer_order" Member="orders" ThisKey="patient_id" OtherKey="patient_id" Type="order" />
     </Type>
   </Table>
   <Table Name="dbo.chat" Member="chats">
@@ -131,7 +132,7 @@
       <Column Name="comment_text" Type="System.String" DbType="NVarChar(MAX) NOT NULL" CanBeNull="false" />
       <Column Name="created_at" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
       <Association Name="customer_comment" Member="customer" ThisKey="patient_id" OtherKey="patient_id" Type="customer" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
-      <Association Name="review1_comment" Member="review" ThisKey="review_id" OtherKey="review_id" Type="review" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+      <Association Name="review_comment" Member="review" ThisKey="review_id" OtherKey="review_id" Type="review" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
     </Type>
   </Table>
   <Table Name="dbo.reviews" Member="reviews">
@@ -143,9 +144,37 @@
       <Column Name="comment" Type="System.String" DbType="NVarChar(1000)" CanBeNull="true" />
       <Column Name="created_at" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
       <Column Name="title" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
-      <Association Name="review1_comment" Member="comments" ThisKey="review_id" OtherKey="review_id" Type="comment" />
-      <Association Name="admin_review1" Member="admin" ThisKey="doctor_id" OtherKey="doctor_id" Type="admin" IsForeignKey="true" />
-      <Association Name="customer_review1" Member="customer" ThisKey="patient_id" OtherKey="patient_id" Type="customer" IsForeignKey="true" />
+      <Association Name="review_comment" Member="comments" ThisKey="review_id" OtherKey="review_id" Type="comment" />
+      <Association Name="admin_review" Member="admin" ThisKey="doctor_id" OtherKey="doctor_id" Type="admin" IsForeignKey="true" />
+      <Association Name="customer_review" Member="customer" ThisKey="patient_id" OtherKey="patient_id" Type="customer" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.payment" Member="payments">
+    <Type Name="payment">
+      <Column Name="payment_id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="order_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="payment_date" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="payment_method" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="amount" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
+      <Column Name="payment_status" Type="System.String" DbType="NVarChar(20)" CanBeNull="true" />
+      <Column Name="transaction_id" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
+      <Column Name="is_verified" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="created_at" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Association Name="order_payment" Member="order" ThisKey="order_id" OtherKey="order_id" Type="order" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.orders" Member="orders">
+    <Type Name="order">
+      <Column Name="order_id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="order_date" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="patient_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="is_paid" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="is_done" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="is_shipped" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="training_date" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="total_amount" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
+      <Association Name="order_payment" Member="payments" ThisKey="order_id" OtherKey="order_id" Type="payment" />
+      <Association Name="customer_order" Member="customer" ThisKey="patient_id" OtherKey="patient_id" Type="customer" IsForeignKey="true" />
     </Type>
   </Table>
 </Database>

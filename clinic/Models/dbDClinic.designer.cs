@@ -63,6 +63,12 @@ namespace clinic.Models
     partial void Insertreview(review instance);
     partial void Updatereview(review instance);
     partial void Deletereview(review instance);
+    partial void Insertpayment(payment instance);
+    partial void Updatepayment(payment instance);
+    partial void Deletepayment(payment instance);
+    partial void Insertorder(order instance);
+    partial void Updateorder(order instance);
+    partial void Deleteorder(order instance);
     #endregion
 		
 		public dbDClinicDataContext(string connection) : 
@@ -88,8 +94,14 @@ namespace clinic.Models
 		{
 			OnCreated();
 		}
-		
-		public System.Data.Linq.Table<admin> admins
+
+        public dbDClinicDataContext() :
+              base(global::System.Configuration.ConfigurationManager.ConnectionStrings["dclinicConnectionString"].ConnectionString, mappingSource)
+        {
+            OnCreated();
+        }
+
+        public System.Data.Linq.Table<admin> admins
 		{
 			get
 			{
@@ -174,6 +186,22 @@ namespace clinic.Models
 			get
 			{
 				return this.GetTable<review>();
+			}
+		}
+		
+		public System.Data.Linq.Table<payment> payments
+		{
+			get
+			{
+				return this.GetTable<payment>();
+			}
+		}
+		
+		public System.Data.Linq.Table<order> orders
+		{
+			get
+			{
+				return this.GetTable<order>();
 			}
 		}
 	}
@@ -462,7 +490,7 @@ namespace clinic.Models
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="admin_review1", Storage="_reviews", ThisKey="doctor_id", OtherKey="doctor_id")]
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="admin_review", Storage="_reviews", ThisKey="doctor_id", OtherKey="doctor_id")]
 		public EntitySet<review> reviews
 		{
 			get
@@ -1239,6 +1267,8 @@ namespace clinic.Models
 		
 		private EntitySet<review> _reviews;
 		
+		private EntitySet<order> _orders;
+		
     #region Extensibility Method Definitions
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
@@ -1272,6 +1302,7 @@ namespace clinic.Models
 			this._qa_forums = new EntitySet<qa_forum>(new Action<qa_forum>(this.attach_qa_forums), new Action<qa_forum>(this.detach_qa_forums));
 			this._comments = new EntitySet<comment>(new Action<comment>(this.attach_comments), new Action<comment>(this.detach_comments));
 			this._reviews = new EntitySet<review>(new Action<review>(this.attach_reviews), new Action<review>(this.detach_reviews));
+			this._orders = new EntitySet<order>(new Action<order>(this.attach_orders), new Action<order>(this.detach_orders));
 			OnCreated();
 		}
 		
@@ -1527,7 +1558,7 @@ namespace clinic.Models
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="customer_review1", Storage="_reviews", ThisKey="patient_id", OtherKey="patient_id")]
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="customer_review", Storage="_reviews", ThisKey="patient_id", OtherKey="patient_id")]
 		public EntitySet<review> reviews
 		{
 			get
@@ -1537,6 +1568,19 @@ namespace clinic.Models
 			set
 			{
 				this._reviews.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="customer_order", Storage="_orders", ThisKey="patient_id", OtherKey="patient_id")]
+		public EntitySet<order> orders
+		{
+			get
+			{
+				return this._orders;
+			}
+			set
+			{
+				this._orders.Assign(value);
 			}
 		}
 		
@@ -1615,6 +1659,18 @@ namespace clinic.Models
 		}
 		
 		private void detach_reviews(review entity)
+		{
+			this.SendPropertyChanging();
+			entity.customer = null;
+		}
+		
+		private void attach_orders(order entity)
+		{
+			this.SendPropertyChanging();
+			entity.customer = this;
+		}
+		
+		private void detach_orders(order entity)
 		{
 			this.SendPropertyChanging();
 			entity.customer = null;
@@ -2997,7 +3053,7 @@ namespace clinic.Models
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="review1_comment", Storage="_review", ThisKey="review_id", OtherKey="review_id", IsForeignKey=true, DeleteOnNull=true, DeleteRule="CASCADE")]
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="review_comment", Storage="_review", ThisKey="review_id", OtherKey="review_id", IsForeignKey=true, DeleteOnNull=true, DeleteRule="CASCADE")]
 		public review review
 		{
 			get
@@ -3254,7 +3310,7 @@ namespace clinic.Models
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="review1_comment", Storage="_comments", ThisKey="review_id", OtherKey="review_id")]
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="review_comment", Storage="_comments", ThisKey="review_id", OtherKey="review_id")]
 		public EntitySet<comment> comments
 		{
 			get
@@ -3267,7 +3323,7 @@ namespace clinic.Models
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="admin_review1", Storage="_admin", ThisKey="doctor_id", OtherKey="doctor_id", IsForeignKey=true)]
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="admin_review", Storage="_admin", ThisKey="doctor_id", OtherKey="doctor_id", IsForeignKey=true)]
 		public admin admin
 		{
 			get
@@ -3301,7 +3357,7 @@ namespace clinic.Models
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="customer_review1", Storage="_customer", ThisKey="patient_id", OtherKey="patient_id", IsForeignKey=true)]
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="customer_review", Storage="_customer", ThisKey="patient_id", OtherKey="patient_id", IsForeignKey=true)]
 		public customer customer
 		{
 			get
@@ -3365,6 +3421,600 @@ namespace clinic.Models
 		{
 			this.SendPropertyChanging();
 			entity.review = null;
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.payment")]
+	public partial class payment : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private int _payment_id;
+		
+		private System.Nullable<int> _order_id;
+		
+		private System.Nullable<System.DateTime> _payment_date;
+		
+		private string _payment_method;
+		
+		private System.Nullable<decimal> _amount;
+		
+		private string _payment_status;
+		
+		private string _transaction_id;
+		
+		private System.Nullable<bool> _is_verified;
+		
+		private System.Nullable<System.DateTime> _created_at;
+		
+		private EntityRef<order> _order;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void Onpayment_idChanging(int value);
+    partial void Onpayment_idChanged();
+    partial void Onorder_idChanging(System.Nullable<int> value);
+    partial void Onorder_idChanged();
+    partial void Onpayment_dateChanging(System.Nullable<System.DateTime> value);
+    partial void Onpayment_dateChanged();
+    partial void Onpayment_methodChanging(string value);
+    partial void Onpayment_methodChanged();
+    partial void OnamountChanging(System.Nullable<decimal> value);
+    partial void OnamountChanged();
+    partial void Onpayment_statusChanging(string value);
+    partial void Onpayment_statusChanged();
+    partial void Ontransaction_idChanging(string value);
+    partial void Ontransaction_idChanged();
+    partial void Onis_verifiedChanging(System.Nullable<bool> value);
+    partial void Onis_verifiedChanged();
+    partial void Oncreated_atChanging(System.Nullable<System.DateTime> value);
+    partial void Oncreated_atChanged();
+    #endregion
+		
+		public payment()
+		{
+			this._order = default(EntityRef<order>);
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_payment_id", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		public int payment_id
+		{
+			get
+			{
+				return this._payment_id;
+			}
+			set
+			{
+				if ((this._payment_id != value))
+				{
+					this.Onpayment_idChanging(value);
+					this.SendPropertyChanging();
+					this._payment_id = value;
+					this.SendPropertyChanged("payment_id");
+					this.Onpayment_idChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_order_id", DbType="Int")]
+		public System.Nullable<int> order_id
+		{
+			get
+			{
+				return this._order_id;
+			}
+			set
+			{
+				if ((this._order_id != value))
+				{
+					if (this._order.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.Onorder_idChanging(value);
+					this.SendPropertyChanging();
+					this._order_id = value;
+					this.SendPropertyChanged("order_id");
+					this.Onorder_idChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_payment_date", DbType="DateTime")]
+		public System.Nullable<System.DateTime> payment_date
+		{
+			get
+			{
+				return this._payment_date;
+			}
+			set
+			{
+				if ((this._payment_date != value))
+				{
+					this.Onpayment_dateChanging(value);
+					this.SendPropertyChanging();
+					this._payment_date = value;
+					this.SendPropertyChanged("payment_date");
+					this.Onpayment_dateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_payment_method", DbType="NVarChar(50)")]
+		public string payment_method
+		{
+			get
+			{
+				return this._payment_method;
+			}
+			set
+			{
+				if ((this._payment_method != value))
+				{
+					this.Onpayment_methodChanging(value);
+					this.SendPropertyChanging();
+					this._payment_method = value;
+					this.SendPropertyChanged("payment_method");
+					this.Onpayment_methodChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_amount", DbType="Decimal(18,2)")]
+		public System.Nullable<decimal> amount
+		{
+			get
+			{
+				return this._amount;
+			}
+			set
+			{
+				if ((this._amount != value))
+				{
+					this.OnamountChanging(value);
+					this.SendPropertyChanging();
+					this._amount = value;
+					this.SendPropertyChanged("amount");
+					this.OnamountChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_payment_status", DbType="NVarChar(20)")]
+		public string payment_status
+		{
+			get
+			{
+				return this._payment_status;
+			}
+			set
+			{
+				if ((this._payment_status != value))
+				{
+					this.Onpayment_statusChanging(value);
+					this.SendPropertyChanging();
+					this._payment_status = value;
+					this.SendPropertyChanged("payment_status");
+					this.Onpayment_statusChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_transaction_id", DbType="VarChar(100)")]
+		public string transaction_id
+		{
+			get
+			{
+				return this._transaction_id;
+			}
+			set
+			{
+				if ((this._transaction_id != value))
+				{
+					this.Ontransaction_idChanging(value);
+					this.SendPropertyChanging();
+					this._transaction_id = value;
+					this.SendPropertyChanged("transaction_id");
+					this.Ontransaction_idChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_is_verified", DbType="Bit")]
+		public System.Nullable<bool> is_verified
+		{
+			get
+			{
+				return this._is_verified;
+			}
+			set
+			{
+				if ((this._is_verified != value))
+				{
+					this.Onis_verifiedChanging(value);
+					this.SendPropertyChanging();
+					this._is_verified = value;
+					this.SendPropertyChanged("is_verified");
+					this.Onis_verifiedChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_created_at", DbType="DateTime")]
+		public System.Nullable<System.DateTime> created_at
+		{
+			get
+			{
+				return this._created_at;
+			}
+			set
+			{
+				if ((this._created_at != value))
+				{
+					this.Oncreated_atChanging(value);
+					this.SendPropertyChanging();
+					this._created_at = value;
+					this.SendPropertyChanged("created_at");
+					this.Oncreated_atChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="order_payment", Storage="_order", ThisKey="order_id", OtherKey="order_id", IsForeignKey=true)]
+		public order order
+		{
+			get
+			{
+				return this._order.Entity;
+			}
+			set
+			{
+				order previousValue = this._order.Entity;
+				if (((previousValue != value) 
+							|| (this._order.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._order.Entity = null;
+						previousValue.payments.Remove(this);
+					}
+					this._order.Entity = value;
+					if ((value != null))
+					{
+						value.payments.Add(this);
+						this._order_id = value.order_id;
+					}
+					else
+					{
+						this._order_id = default(Nullable<int>);
+					}
+					this.SendPropertyChanged("order");
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.orders")]
+	public partial class order : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private int _order_id;
+		
+		private System.Nullable<System.DateTime> _order_date;
+		
+		private System.Nullable<int> _patient_id;
+		
+		private System.Nullable<bool> _is_paid;
+		
+		private System.Nullable<bool> _is_done;
+		
+		private System.Nullable<bool> _is_shipped;
+		
+		private System.Nullable<System.DateTime> _training_date;
+		
+		private System.Nullable<decimal> _total_amount;
+		
+		private EntitySet<payment> _payments;
+		
+		private EntityRef<customer> _customer;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void Onorder_idChanging(int value);
+    partial void Onorder_idChanged();
+    partial void Onorder_dateChanging(System.Nullable<System.DateTime> value);
+    partial void Onorder_dateChanged();
+    partial void Onpatient_idChanging(System.Nullable<int> value);
+    partial void Onpatient_idChanged();
+    partial void Onis_paidChanging(System.Nullable<bool> value);
+    partial void Onis_paidChanged();
+    partial void Onis_doneChanging(System.Nullable<bool> value);
+    partial void Onis_doneChanged();
+    partial void Onis_shippedChanging(System.Nullable<bool> value);
+    partial void Onis_shippedChanged();
+    partial void Ontraining_dateChanging(System.Nullable<System.DateTime> value);
+    partial void Ontraining_dateChanged();
+    partial void Ontotal_amountChanging(System.Nullable<decimal> value);
+    partial void Ontotal_amountChanged();
+    #endregion
+		
+		public order()
+		{
+			this._payments = new EntitySet<payment>(new Action<payment>(this.attach_payments), new Action<payment>(this.detach_payments));
+			this._customer = default(EntityRef<customer>);
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_order_id", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		public int order_id
+		{
+			get
+			{
+				return this._order_id;
+			}
+			set
+			{
+				if ((this._order_id != value))
+				{
+					this.Onorder_idChanging(value);
+					this.SendPropertyChanging();
+					this._order_id = value;
+					this.SendPropertyChanged("order_id");
+					this.Onorder_idChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_order_date", DbType="DateTime")]
+		public System.Nullable<System.DateTime> order_date
+		{
+			get
+			{
+				return this._order_date;
+			}
+			set
+			{
+				if ((this._order_date != value))
+				{
+					this.Onorder_dateChanging(value);
+					this.SendPropertyChanging();
+					this._order_date = value;
+					this.SendPropertyChanged("order_date");
+					this.Onorder_dateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_patient_id", DbType="Int")]
+		public System.Nullable<int> patient_id
+		{
+			get
+			{
+				return this._patient_id;
+			}
+			set
+			{
+				if ((this._patient_id != value))
+				{
+					if (this._customer.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.Onpatient_idChanging(value);
+					this.SendPropertyChanging();
+					this._patient_id = value;
+					this.SendPropertyChanged("patient_id");
+					this.Onpatient_idChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_is_paid", DbType="Bit")]
+		public System.Nullable<bool> is_paid
+		{
+			get
+			{
+				return this._is_paid;
+			}
+			set
+			{
+				if ((this._is_paid != value))
+				{
+					this.Onis_paidChanging(value);
+					this.SendPropertyChanging();
+					this._is_paid = value;
+					this.SendPropertyChanged("is_paid");
+					this.Onis_paidChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_is_done", DbType="Bit")]
+		public System.Nullable<bool> is_done
+		{
+			get
+			{
+				return this._is_done;
+			}
+			set
+			{
+				if ((this._is_done != value))
+				{
+					this.Onis_doneChanging(value);
+					this.SendPropertyChanging();
+					this._is_done = value;
+					this.SendPropertyChanged("is_done");
+					this.Onis_doneChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_is_shipped", DbType="Bit")]
+		public System.Nullable<bool> is_shipped
+		{
+			get
+			{
+				return this._is_shipped;
+			}
+			set
+			{
+				if ((this._is_shipped != value))
+				{
+					this.Onis_shippedChanging(value);
+					this.SendPropertyChanging();
+					this._is_shipped = value;
+					this.SendPropertyChanged("is_shipped");
+					this.Onis_shippedChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_training_date", DbType="DateTime")]
+		public System.Nullable<System.DateTime> training_date
+		{
+			get
+			{
+				return this._training_date;
+			}
+			set
+			{
+				if ((this._training_date != value))
+				{
+					this.Ontraining_dateChanging(value);
+					this.SendPropertyChanging();
+					this._training_date = value;
+					this.SendPropertyChanged("training_date");
+					this.Ontraining_dateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_total_amount", DbType="Decimal(18,2)")]
+		public System.Nullable<decimal> total_amount
+		{
+			get
+			{
+				return this._total_amount;
+			}
+			set
+			{
+				if ((this._total_amount != value))
+				{
+					this.Ontotal_amountChanging(value);
+					this.SendPropertyChanging();
+					this._total_amount = value;
+					this.SendPropertyChanged("total_amount");
+					this.Ontotal_amountChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="order_payment", Storage="_payments", ThisKey="order_id", OtherKey="order_id")]
+		public EntitySet<payment> payments
+		{
+			get
+			{
+				return this._payments;
+			}
+			set
+			{
+				this._payments.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="customer_order", Storage="_customer", ThisKey="patient_id", OtherKey="patient_id", IsForeignKey=true)]
+		public customer customer
+		{
+			get
+			{
+				return this._customer.Entity;
+			}
+			set
+			{
+				customer previousValue = this._customer.Entity;
+				if (((previousValue != value) 
+							|| (this._customer.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._customer.Entity = null;
+						previousValue.orders.Remove(this);
+					}
+					this._customer.Entity = value;
+					if ((value != null))
+					{
+						value.orders.Add(this);
+						this._patient_id = value.patient_id;
+					}
+					else
+					{
+						this._patient_id = default(Nullable<int>);
+					}
+					this.SendPropertyChanged("customer");
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+		
+		private void attach_payments(payment entity)
+		{
+			this.SendPropertyChanging();
+			entity.order = this;
+		}
+		
+		private void detach_payments(payment entity)
+		{
+			this.SendPropertyChanging();
+			entity.order = null;
 		}
 	}
 }
